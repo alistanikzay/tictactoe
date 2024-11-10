@@ -75,4 +75,16 @@ class ModelTest {
         assertEquals(1, xCount, "Exactly one button should be marked as 'X' after computer move");
     }
 
+    @Test
+    void whenThereIsThreeInARow() {
+        // Simulera tre-i-rad för "O"
+        buttons.get(0).setText("O");
+        buttons.get(1).setText("O");
+        buttons.get(2).setText("O");
+
+        String winner = model.winStates();
+        assertEquals("O", winner, "The model should recognize 'O' as the winner");
+    }
+}
+
 
