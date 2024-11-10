@@ -48,3 +48,58 @@ public class Model {
         });
     }
 
+    public String winStates() {
+        for (int a = 0; a < 8; a++) {
+            String line = switch (a) {
+                case 0 -> BUTTONS.get(0).getText() + BUTTONS.get(1).getText() + BUTTONS.get(2).getText();
+                case 1 -> BUTTONS.get(3).getText() + BUTTONS.get(4).getText() + BUTTONS.get(5).getText();
+                case 2 -> BUTTONS.get(6).getText() + BUTTONS.get(7).getText() + BUTTONS.get(8).getText();
+                case 3 -> BUTTONS.get(0).getText() + BUTTONS.get(3).getText() + BUTTONS.get(6).getText();
+                case 4 -> BUTTONS.get(1).getText() + BUTTONS.get(4).getText() + BUTTONS.get(7).getText();
+                case 5 -> BUTTONS.get(2).getText() + BUTTONS.get(5).getText() + BUTTONS.get(8).getText();
+                case 6 -> BUTTONS.get(0).getText() + BUTTONS.get(4).getText() + BUTTONS.get(8).getText();
+                case 7 -> BUTTONS.get(2).getText() + BUTTONS.get(4).getText() + BUTTONS.get(6).getText();
+                default -> null;
+            };
+
+            String winner = winnerIs(line);
+            if (winner != null) {
+                return winner;
+            }
+        }
+        return null;
+    }
+
+    private String winnerIs(String line) {
+        if (line.equals("OOO")) {
+            updateScore("O");
+            disableAllButtons();
+            return "O";
+        } else if (line.equals("XXX")) {
+            updateScore("X");
+            disableAllButtons();
+            return "X";
+        }
+        return null;
+    }
+
+    private void updateScore(String player) {
+        if (player.equals("O")) {
+            xScore++;
+        } else if (player.equals("X")) {
+            oScore++;
+        }
+    }
+
+    private void disableAllButtons() {
+        BUTTONS.forEach(b -> b.setDisable(true));
+    }
+
+    public int getXScore() {
+        return xScore;
+    }
+
+    public int getOScore() {
+        return oScore;
+    }
+}
