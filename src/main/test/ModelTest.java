@@ -43,3 +43,16 @@ class ModelTest {
 
         model = new Model(buttons);
     }
+
+    @Test
+    void whenPlayerMakesAMove() {
+        Button button = buttons.get(0);  // Ändra från 'getFirst' till 'get(0)'
+        model.playerMove(button);
+
+        assertEquals("O", button.getText(), "The button text should be set to 'O' after player move");
+        assertTrue(button.isDisable(), "The button should be disabled after player move");
+
+        // Test för att säkerställa att knappens text inte ändras om den klickas igen
+        model.playerMove(button);
+        assertEquals("O", button.getText(), "Button text should remain 'O' if clicked again");
+    }
