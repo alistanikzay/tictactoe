@@ -56,3 +56,23 @@ class ModelTest {
         model.playerMove(button);
         assertEquals("O", button.getText(), "Button text should remain 'O' if clicked again");
     }
+
+    @Test
+    void whenComputerMakesAMove() throws InterruptedException {
+        // Kör `computerMove` på JavaFX-tråden och logga knapparnas status
+        Platform.runLater(() -> {
+            model.computerMove();
+            buttons.forEach(b -> System.out.println("Button text: " + b.getText() + ", disabled: " + b.isDisable()));
+        });
+
+        // Vänta tills `computerMove` är klar
+        CountDownLatch latch = new CountDownLatch(1);
+        Platform.runLater(latch::countDown);
+        latch.await();
+
+        // Kontrollera att exakt en knapp har markerats som "X" efter datorspel
+        long xCount = buttons.stream().filter(b -> "X".equals(b.getText()) && b.isDisable()).count();
+        assertEquals(1, xCount, "Exactly one button should be marked as 'X' after computer move");
+    }
+
+
