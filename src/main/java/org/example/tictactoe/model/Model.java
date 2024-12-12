@@ -1,44 +1,68 @@
-
 package org.example.tictactoe.model;
 
 import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class Model {
     private final List<Button> BUTTONS;
+    private final List<String> board; // Gör denna mutable
     private int xScore = 0;
     private int oScore = 0;
     private final Random RANDOM = new Random();
 
     public Model(List<Button> buttons) {
         this.BUTTONS = buttons;
+        this.board = new ArrayList<>(); // Använd ArrayList istället
+        for (int i = 0; i < 9; i++) {
+            board.add(""); // Initiera med tomma strängar
+        }
     }
 
     public void playerMove(Button button) {
-        if (button.isDisable() || winStates() != null) return;
+        int index = BUTTONS.indexOf(button);
+        if (button.isDisable()) return;
 
         button.setText("O");
         button.setDisable(true);
         button.setTextFill(Color.RED);
+        board.set(index, "O"); // Nu fungerar set korrekt
     }
 
     public void computerMove() {
-        if (winStates() != null || allButtonsDisabled()) return;
-
         var allEnabledButtons = BUTTONS.stream().filter(b -> !b.isDisable()).toList();
         if (allEnabledButtons.isEmpty()) return;
 
         Button button = allEnabledButtons.get(RANDOM.nextInt(allEnabledButtons.size()));
+        int index = BUTTONS.indexOf(button);
+
         button.setText("X");
         button.setDisable(true);
         button.setTextFill(Color.BLUE);
+        board.set(index, "X"); // Uppdatera board korrekt
     }
 
-    public boolean allButtonsDisabled() {
-        return BUTTONS.stream().allMatch(Button::isDisable);
+    public String winStates() {
+        String[] winPatterns = {
+                board.get(0) + board.get(1) + board.get(2),
+                board.get(3) + board.get(4) + board.get(5),
+                board.get(6) + board.get(7) + board.get(8),
+                board.get(0) + board.get(3) + board.get(6),
+                board.get(1) + board.get(4) + board.get(7),
+                board.get(2) + board.get(5) + board.get(8),
+                board.get(0) + board.get(4) + board.get(8),
+                board.get(2) + board.get(4) + board.get(6),
+        };
+
+        for (String pattern : winPatterns) {
+            if ("OOO".equals(pattern)) return "O";
+            if ("XXX".equals(pattern)) return "X";
+        }
+
+        return null;
     }
 
     public void reset() {
@@ -46,53 +70,17 @@ public class Model {
             b.setDisable(false);
             b.setText("");
         });
-    }
-
-    public String winStates() {
-        for (int a = 0; a < 8; a++) {
-            String line = switch (a) {
-                case 0 -> BUTTONS.get(0).getText() + BUTTONS.get(1).getText() + BUTTONS.get(2).getText();
-                case 1 -> BUTTONS.get(3).getText() + BUTTONS.get(4).getText() + BUTTONS.get(5).getText();
-                case 2 -> BUTTONS.get(6).getText() + BUTTONS.get(7).getText() + BUTTONS.get(8).getText();
-                case 3 -> BUTTONS.get(0).getText() + BUTTONS.get(3).getText() + BUTTONS.get(6).getText();
-                case 4 -> BUTTONS.get(1).getText() + BUTTONS.get(4).getText() + BUTTONS.get(7).getText();
-                case 5 -> BUTTONS.get(2).getText() + BUTTONS.get(5).getText() + BUTTONS.get(8).getText();
-                case 6 -> BUTTONS.get(0).getText() + BUTTONS.get(4).getText() + BUTTONS.get(8).getText();
-                case 7 -> BUTTONS.get(2).getText() + BUTTONS.get(4).getText() + BUTTONS.get(6).getText();
-                default -> null;
-            };
-
-            String winner = winnerIs(line);
-            if (winner != null) {
-                return winner;
-            }
+        for (int i = 0; i < board.size(); i++) {
+            board.set(i, ""); // Återställ board korrekt
         }
-        return null;
     }
 
-    private String winnerIs(String line) {
-        if (line.equals("OOO")) {
-            updateScore("O");
-            disableAllButtons();
-            return "O";
-        } else if (line.equals("XXX")) {
-            updateScore("X");
-            disableAllButtons();
-            return "X";
-        }
-        return null;
-    }
-
-    private void updateScore(String player) {
-        if (player.equals("O")) {
+    public void incrementScore(String player) {
+        if ("X".equals(player)) {
             xScore++;
-        } else if (player.equals("X")) {
+        } else if ("O".equals(player)) {
             oScore++;
         }
-    }
-
-    private void disableAllButtons() {
-        BUTTONS.forEach(b -> b.setDisable(true));
     }
 
     public int getXScore() {
@@ -101,5 +89,9 @@ public class Model {
 
     public int getOScore() {
         return oScore;
+    }
+
+    public boolean allButtonsDisabled() {
+        return BUTTONS.stream().allMatch(Button::isDisable);
     }
 }
