@@ -11,98 +11,126 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TicTacToeController {
-
-    @FXML
-    private Button button1, button2, button3, button4, button5, button6, button7, button8, button9;
-    @FXML
-    private Label statusLabel, OScore, XScore;
-
     private Model model;
+    private List<Button> buttons;
     private List<String> board;
 
-    public void initialize() {
-        List<Button> buttons = new ArrayList<>(Arrays.asList(button1, button2, button3, button4, button5, button6, button7, button8, button9));
-        board = new ArrayList<>(Arrays.asList("", "", "", "", "", "", "", "", ""));
-        model = new Model(buttons);
+    @FXML
+    private void initialize() {
+        buttons = Arrays.asList(button1, button2, button3, button4, button5, button6, button7, button8, button9);
+        board = Arrays.asList("", "", "", "", "", "", "", "", "");
+        model = new Model();  // Använd standardkonstruktorn
+
     }
 
     @FXML
-    private void clickedButton(ActionEvent actionEvent) {
-        Button button = (Button) actionEvent.getSource();
-        int index = getButtonIndex(button);
+    private Button button1;
+    @FXML
+    private Button button2;
+    @FXML
+    private Button button3;
+    @FXML
+    private Button button4;
+    @FXML
+    private Button button5;
+    @FXML
+    private Button button6;
+    @FXML
+    private Button button7;
+    @FXML
+    private Button button8;
+    @FXML
+    private Button button9;
 
-        // Spelaren gör ett drag
-        model.playerMove(button);
-        board.set(index, "O");
+    @FXML
+    private Label XScore;
+    @FXML
+    private Label OScore;
+    @FXML
+    private Label statusLabel;
 
-        // Kontrollera vinnare
-        String winner = checkWinner();
-        if (winner == null) {
-            // Datorn gör ett drag
-            model.computerMove();
-            updateBoardAfterComputerMove();
-
-            winner = checkWinner();
-        }
-
-        updateScores(winner);
+    @FXML
+    private void clickedButton(ActionEvent event) {
+        // Din logik här
     }
 
-    private int getButtonIndex(Button button) {
-        return Arrays.asList(button1, button2, button3, button4, button5, button6, button7, button8, button9).indexOf(button);
+    @FXML
+    private void reset(ActionEvent event) {
+        model.reset();       // Återställ spelbrädet i Model
+        updateView();        // Uppdatera knapparna i GUI
+        statusLabel.setText("");  // Töm statuslabeln
     }
 
-    private void updateBoardAfterComputerMove() {
-        for (int i = 0; i < 9; i++) {
-            if ("X".equals(getButtonText(i))) {
-                board.set(i, "X");
+
+
+    @FXML
+    private void handleButtonClick(ActionEvent event) {
+        Button clickedButton = (Button) event.getSource();
+        int index = buttons.indexOf(clickedButton);
+
+        System.out.println("Button clicked by player at index: " + index);  // Debug print
+
+        if (model.playerMove(index)) {
+            clickedButton.setText("O");
+            clickedButton.setDisable(true);
+
+            String winner = model.checkWinner();
+            System.out.println("Winner after player move: " + winner);
+
+            if ("O".equals(winner)) {
+                displayWinner("Player");
+            } else if ("X".equals(winner)) {
+                displayWinner("Computer");
+            } else if (allButtonsDisabled()) {
+                displayWinner("Draw");
+            } else {
+                model.computerMove();
+                System.out.println("Computer made a move");
+                updateView();
+
+                winner = model.checkWinner();
+                System.out.println("Winner after computer move: " + winner);
+
+                if ("X".equals(winner)) {
+                    displayWinner("Computer");
+                }
             }
+        } else {
+            System.out.println("Cell already occupied.");
         }
     }
 
-    private String getButtonText(int index) {
-        Button button = Arrays.asList(button1, button2, button3, button4, button5, button6, button7, button8, button9).get(index);
-        return button.getText();
+
+    private boolean allButtonsDisabled() {
+        return buttons.stream().allMatch(button -> button.isDisable());
     }
 
-    private String checkWinner() {
-        String[] winPatterns = {
-                board.get(0) + board.get(1) + board.get(2),
-                board.get(3) + board.get(4) + board.get(5),
-                board.get(6) + board.get(7) + board.get(8),
-                board.get(0) + board.get(3) + board.get(6),
-                board.get(1) + board.get(4) + board.get(7),
-                board.get(2) + board.get(5) + board.get(8),
-                board.get(0) + board.get(4) + board.get(8),
-                board.get(2) + board.get(4) + board.get(6)
-        };
-
-        for (String pattern : winPatterns) {
-            if ("OOO".equals(pattern)) return "O";
-            if ("XXX".equals(pattern)) return "X";
+    private void updateView() {
+        for (int i = 0; i < buttons.size(); i++) {
+            buttons.get(i).setText(model.getBoard().get(i));  // Uppdatera knapparna med spelbrädet
+            buttons.get(i).setDisable(!model.getBoard().get(i).isEmpty());  // Aktivera/Deaktivera knappar efter spelstatus
         }
-        return null;
+        statusLabel.setText("");  // Töm statuslabel för en ny omgång
     }
 
-    private void updateScores(String winner) {
-        if ("X".equals(winner) || "O".equals(winner)) {
-            model.incrementScore(winner);
+
+    private void displayWinner(String winner) {
+        statusLabel.setText(winner + " won the game!");
+
+        if ("Player".equals(winner)) {
+            model.incrementScore("O");
+            XScore.setText("X: " + model.getXScore());
+            OScore.setText("O: " + model.getOScore());
+        } else if ("Computer".equals(winner)) {
+            model.incrementScore("X");
+            XScore.setText("X: " + model.getXScore());
+            OScore.setText("O: " + model.getOScore());
+        } else if ("Draw".equals(winner)) {
+            statusLabel.setText("Game ended in a Draw!");
         }
 
-        XScore.setText("Score: " + model.getXScore());
-        OScore.setText("Score: " + model.getOScore());
-
-        if (winner != null) {
-            statusLabel.setText(winner + " wins!");
-        } else if (model.allButtonsDisabled()) {
-            statusLabel.setText("Draw!");
-        }
-    }
-
-    public void reset() {
-        model.reset();
-        board = new ArrayList<>(Arrays.asList("", "", "", "", "", "", "", "", ""));
-        statusLabel.setText("");
-        updateScores(null);
+        // Inaktivera alla knappar eftersom spelet är över
+        buttons.forEach(button -> button.setDisable(true));
     }
 }
+

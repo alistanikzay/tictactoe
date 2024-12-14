@@ -1,102 +1,96 @@
 package org.example.tictactoe.model;
 
-import javafx.application.Platform;
-import javafx.scene.control.Button;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ModelTest {
-
     private Model model;
-    private List<Button> buttons;
-
-    @BeforeAll
-    static void initJavaFX() throws InterruptedException {
-        CountDownLatch latch = new CountDownLatch(1);
-        Platform.startup(latch::countDown);
-        latch.await();
-    }
 
     @BeforeEach
-    void setUp() throws InterruptedException {
-        buttons = new ArrayList<>();
-        Platform.runLater(() -> {
-            for (int i = 0; i < 9; i++) {
-                buttons.add(new Button());
-            }
-        });
+    void setUp() {
+        model = new Model();
+    }
 
-        CountDownLatch latch = new CountDownLatch(1);
-        Platform.runLater(latch::countDown);
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+    @Test
+    void playerMoveUpdatesBoardCorrectly() {
+        boolean result = model.playerMove(0);
+        List<String> board = model.getBoard();
+
+        assertTrue(result, "Player move should be successful");
+        assertEquals("O", board.get(0), "The board should reflect the player's move");
+    }
+
+    @Test
+    void playerCannotMoveToOccupiedCell() {
+        model.playerMove(0);
+        boolean result = model.playerMove(0);
+
+        assertFalse(result, "Player move should fail if cell is occupied");
+    }
+
+    @Test
+    void computerMoveUpdatesBoardCorrectly() {
+        model.computerMove();
+        List<String> board = model.getBoard();
+
+        long xCount = board.stream().filter(cell -> cell.equals("X")).count();
+        assertEquals(1, xCount, "Computer should place exactly one 'X' on the board");
+    }
+
+    @Test
+    void checkWinnerIdentifiesRowWinner() {
+        model.playerMove(0);
+        model.playerMove(1);
+        model.playerMove(2);
+
+        String winner = model.checkWinner();
+        assertEquals("O", winner, "The model should recognize 'O' as the winner for a row");
+    }
+
+    @Test
+    void checkWinnerIdentifiesColumnWinner() {
+        model.playerMove(0);
+        model.playerMove(3);
+        model.playerMove(6);
+
+        String winner = model.checkWinner();
+        assertEquals("O", winner, "The model should recognize 'O' as the winner for a column");
+    }
+
+    @Test
+    void checkWinnerIdentifiesDiagonalWinner() {
+        model.playerMove(0);
+        model.playerMove(4);
+        model.playerMove(8);
+
+        String winner = model.checkWinner();
+        assertEquals("O", winner, "The model should recognize 'O' as the winner for a diagonal");
+    }
+
+    @Test
+    void noWinnerIfBoardIsEmpty() {
+        String winner = model.checkWinner();
+        assertNull(winner, "There should be no winner on an empty board");
+    }
+
+    @Test
+    void isBoardFullDetectsFullBoard() {
+        for (int i = 0; i < 9; i++) {
+            model.playerMove(i);
         }
-
-        model = new Model(buttons);
+        assertTrue(model.isBoardFull(), "The board should be full after all cells are occupied");
     }
 
     @Test
-    void whenPlayerMakesAMove() {
-        Button button = buttons.get(0);
-        model.playerMove(button);
+    void resetClearsTheBoard() {
+        model.playerMove(0);
+        model.reset();
 
-        assertEquals("O", button.getText(), "The button text should be set to 'O' after player move");
-        assertTrue(button.isDisable(), "The button should be disabled after player move");
-
-
-        model.playerMove(button);
-        assertEquals("O", button.getText(), "Button text should remain 'O' if clicked again");
+        List<String> board = model.getBoard();
+        assertTrue(board.stream().allMatch(String::isEmpty), "All cells should be empty after reset");
     }
-
-    @Test
-    void whenComputerMakesAMove() throws InterruptedException {
-
-        Platform.runLater(() -> {
-            model.computerMove();
-            buttons.forEach(b -> System.out.println("Button text: " + b.getText() + ", disabled: " + b.isDisable()));
-        });
-
-
-        CountDownLatch latch = new CountDownLatch(1);
-        Platform.runLater(latch::countDown);
-        latch.await();
-
-
-        long xCount = buttons.stream().filter(b -> "X".equals(b.getText()) && b.isDisable()).count();
-        assertEquals(1, xCount, "Exactly one button should be marked as 'X' after computer move");
-    }
-
-    @Test
-    void whenThereIsThreeInARow() {
-        Platform.runLater(() -> {
-            buttons.get(0).setText("O");
-            buttons.get(1).setText("O");
-            buttons.get(2).setText("O");
-
-            model.playerMove(buttons.get(0));
-            model.playerMove(buttons.get(1));
-            model.playerMove(buttons.get(2));
-        });
-
-        CountDownLatch latch = new CountDownLatch(1);
-        Platform.runLater(latch::countDown);
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-        String winner = model.winStates();
-        assertEquals("O", winner, "The model should recognize 'O' as the winner");
-    }
-
 }

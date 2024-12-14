@@ -21,23 +21,23 @@
                     <RowConstraints />
                 </rowConstraints>
 
-                <Button fx:id="button1" maxHeight="100.0" maxWidth="100.0" minHeight="100.0" minWidth="100.0" onAction="#clickedButton" styleClass="Custom-Button" />
+                <Button fx:id="button1" maxHeight="100.0" maxWidth="100.0" minHeight="100.0" minWidth="100.0" onAction="#handleButtonClick" styleClass="Custom-Button" />
 
-                <Button fx:id="button2" maxHeight="100.0" maxWidth="100.0" minHeight="100.0" minWidth="100.0" onAction="#clickedButton" styleClass="Custom-Button" GridPane.columnIndex="1" />
+                <Button fx:id="button2" maxHeight="100.0" maxWidth="100.0" minHeight="100.0" minWidth="100.0" onAction="#handleButtonClick" styleClass="Custom-Button" GridPane.columnIndex="1" />
 
-                <Button fx:id="button3" maxHeight="100.0" maxWidth="100.0" minHeight="100.0" minWidth="100.0" onAction="#clickedButton" styleClass="Custom-Button" GridPane.columnIndex="2" />
+                <Button fx:id="button3" maxHeight="100.0" maxWidth="100.0" minHeight="100.0" minWidth="100.0" onAction="#handleButtonClick" styleClass="Custom-Button" GridPane.columnIndex="2" />
 
-                <Button fx:id="button4" maxHeight="100.0" maxWidth="100.0" minHeight="100.0" minWidth="100.0" onAction="#clickedButton" styleClass="Custom-Button" GridPane.rowIndex="1" />
+                <Button fx:id="button4" maxHeight="100.0" maxWidth="100.0" minHeight="100.0" minWidth="100.0" onAction="#handleButtonClick" styleClass="Custom-Button" GridPane.rowIndex="1" />
 
-                <Button fx:id="button5" maxHeight="100.0" maxWidth="100.0" minHeight="100.0" minWidth="100.0" onAction="#clickedButton" styleClass="Custom-Button" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <Button fx:id="button5" maxHeight="100.0" maxWidth="100.0" minHeight="100.0" minWidth="100.0" onAction="#handleButtonClick" styleClass="Custom-Button" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-                <Button fx:id="button6" maxHeight="100.0" maxWidth="100.0" minHeight="100.0" minWidth="100.0" onAction="#clickedButton" styleClass="Custom-Button" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                <Button fx:id="button6" maxHeight="100.0" maxWidth="100.0" minHeight="100.0" minWidth="100.0" onAction="#handleButtonClick" styleClass="Custom-Button" GridPane.columnIndex="2" GridPane.rowIndex="1" />
 
-                <Button fx:id="button7" maxHeight="100.0" maxWidth="100.0" minHeight="100.0" minWidth="100.0" onAction="#clickedButton" styleClass="Custom-Button" GridPane.rowIndex="2" />
+                <Button fx:id="button7" maxHeight="100.0" maxWidth="100.0" minHeight="100.0" minWidth="100.0" onAction="#handleButtonClick" styleClass="Custom-Button" GridPane.rowIndex="2" />
 
-                <Button fx:id="button8" maxHeight="100.0" maxWidth="100.0" minHeight="100.0" minWidth="100.0" onAction="#clickedButton" styleClass="Custom-Button" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                <Button fx:id="button8" maxHeight="100.0" maxWidth="100.0" minHeight="100.0" minWidth="100.0" onAction="#handleButtonClick" styleClass="Custom-Button" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
-                <Button fx:id="button9" maxHeight="100.0" maxWidth="100.0" minHeight="100.0" minWidth="100.0" onAction="#clickedButton" styleClass="Custom-Button" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                <Button fx:id="button9" maxHeight="100.0" maxWidth="100.0" minHeight="100.0" minWidth="100.0" onAction="#handleButtonClick" styleClass="Custom-Button" GridPane.columnIndex="2" GridPane.rowIndex="2" />
 
 
 
