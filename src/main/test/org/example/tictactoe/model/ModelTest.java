@@ -53,9 +53,9 @@ class ModelTest {
 
     @Test
     void checkWinnerIdentifiesColumnWinner() {
-        model.playerMove(0);
         model.playerMove(3);
-        model.playerMove(6);
+        model.playerMove(4);
+        model.playerMove(5);
 
         String winner = model.checkWinner();
         assertEquals("O", winner, "The model should recognize 'O' as the winner for a column");
@@ -63,8 +63,8 @@ class ModelTest {
 
     @Test
     void checkWinnerIdentifiesDiagonalWinner() {
-        model.playerMove(0);
-        model.playerMove(4);
+        model.playerMove(6);
+        model.playerMove(7);
         model.playerMove(8);
 
         String winner = model.checkWinner();
@@ -72,9 +72,63 @@ class ModelTest {
     }
 
     @Test
+    void checkWinnerIdentifiesLeftColumnWinner() {
+        model.playerMove(0);
+        model.playerMove(3);
+        model.playerMove(6);
+
+        String winner = model.checkWinner();
+        assertEquals("O", winner, "The model should recognize 'O' as the winner for the left column");
+    }
+
+    @Test
+    void checkWinnerIdentifiesMiddleColumnWinner() {
+        model.playerMove(1);
+        model.playerMove(4);
+        model.playerMove(7);
+
+        String winner = model.checkWinner();
+        assertEquals("O", winner, "The model should recognize 'O' as the winner for the middle column");
+    }
+
+    @Test
+    void checkWinnerIdentifiesRightColumnWinner() {
+        model.playerMove(2);
+        model.playerMove(5);
+        model.playerMove(8);
+
+        String winner = model.checkWinner();
+        assertEquals("O", winner, "The model should recognize 'O' as the winner for the right column");
+    }
+    @Test
+    void checkWinnerIdentifiesMainDiagonalWinner() {
+        model.playerMove(0);
+        model.playerMove(4);
+        model.playerMove(8);
+
+        String winner = model.checkWinner();
+        assertEquals("O", winner, "The model should recognize 'O' as the winner for the main diagonal");
+    }
+
+    @Test
+    void checkWinnerIdentifiesAntiDiagonalWinner() {
+        model.playerMove(2);
+        model.playerMove(4);
+        model.playerMove(6);
+
+        String winner = model.checkWinner();
+        assertEquals("O", winner, "The model should recognize 'O' as the winner for the anti-diagonal");
+    }
+
+    @Test
     void noWinnerIfBoardIsEmpty() {
         String winner = model.checkWinner();
         assertNull(winner, "There should be no winner on an empty board");
+    }
+    @Test
+    void checkInitialBoardState() {
+        List<String> board = model.getBoard();
+        assertTrue(board.stream().allMatch(String::isEmpty), "The board should be empty at the start");
     }
 
     @Test
@@ -94,3 +148,5 @@ class ModelTest {
         assertTrue(board.stream().allMatch(String::isEmpty), "All cells should be empty after reset");
     }
 }
+
+
